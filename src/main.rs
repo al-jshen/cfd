@@ -1,10 +1,10 @@
 use ndarray::prelude::*;
 
 fn main() {
-    let (nx, dx, nt, dt, c) = initialize_vars();
+    let (nx, dx, nt, dt) = initialize_vars();
     let mut ics = initialize_ics(nx, dx);
     println!("{}", &ics);
-    ics = forward_integrate(nt, ics, c, dt, dx);
+    ics = forward_integrate(nt, ics, dt, dx);
 }
 
 /// Returns a tuple of five numbers:
@@ -13,14 +13,13 @@ fn main() {
 ///     nt: number of timesteps to integrate over
 ///     dt: amount of time each timestep covers
 ///     c: wavespeed
-fn initialize_vars() -> (usize, f64, usize, f64, f64) {
+fn initialize_vars() -> (usize, f64, usize, f64) {
     let nx = 41;
     let spatial_domain = (0., 2.);
     let dx = (spatial_domain.1 - spatial_domain.0) / (nx - 1) as f64;
-    let nt = 25;
-    let dt = 0.025;
-    let c = 1.;
-    (nx, dx, nt, dt, c)
+    let nt = 50;
+    let dt = 0.0125;
+    (nx, dx, nt, dt)
 }
 
 fn initialize_ics(nx: usize, dx: f64) -> Array1<f64> {
@@ -30,11 +29,11 @@ fn initialize_ics(nx: usize, dx: f64) -> Array1<f64> {
     u
 }
 
-fn forward_integrate(steps: usize, mut ics: Array1<f64>, c: f64, dt: f64, dx: f64) -> Array1<f64> {
+fn forward_integrate(steps: usize, mut ics: Array1<f64>, dt: f64, dx: f64) -> Array1<f64> {
     for n in 0..steps {
         let un = ics.clone();
         for i in 1..ics.len() {
-            ics[i] = un[i] - c * dt / dx * (un[i] - un[i - 1]);
+            ics[i] = un[i] - un[i] * dt / dx * (un[i] - un[i - 1]);
         }
         println!("{}", &ics);
     }
