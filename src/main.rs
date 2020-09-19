@@ -3,9 +3,8 @@ use ndarray::prelude::*;
 fn main() {
     let (nx, dx, nt, dt, c) = initialize_vars();
     let mut ics = initialize_ics(nx, dx);
-    println!("{:?}", &ics);
+    println!("{}", &ics);
     ics = forward_integrate(nt, ics, c, dt, dx);
-    println!("{:?}", &ics);
 }
 
 /// Returns a tuple of five numbers:
@@ -37,6 +36,7 @@ fn forward_integrate(steps: usize, mut ics: Array1<f64>, c: f64, dt: f64, dx: f6
         for i in 1..ics.len() {
             ics[i] = un[i] - c * dt / dx * (un[i] - un[i - 1]);
         }
+        println!("{}", &ics);
     }
     ics
 }
